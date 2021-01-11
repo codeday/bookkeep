@@ -1,0 +1,16 @@
+account:
+  number: 1104
+  name: [Cash, Stripe]
+
+fees_account:
+  number: 7001
+  name: Bank and Merchant Service Charges
+
+bank_accounts:
+  ba_Bs48g0Xw0xFWtU:
+    number: 1101
+    name: [Cash, Bank of America Checking]
+
+  ba_0HzAskKgDHGfuLOOUlQe3rg0:
+    number: 1105
+    name: [Cash, Mercury]

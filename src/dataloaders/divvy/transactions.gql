@@ -1,0 +1,221 @@
+query GetCompanyTransactions(
+  $after: String
+  $amountMin: Int
+  $amountMax: Int
+  $budgetId: [ID]
+  $cardId: [ID]
+  $companyId: ID!
+  $dateEnd: UnixTime
+  $dateStart: UnixTime
+  $filterTagValues: [ID]
+  $first: Int = 30
+  $hasAllRequiredFieldsCompleted: Boolean
+  $isLocked: Boolean
+  $isReviewed: Boolean
+  $search: String
+  $sortColumn: String
+  $sortDirection: String
+  $sortTagType: ID
+  $syncStatus: [SyncStatus]
+  $tagValueCount: Int
+  $types: TransactionType
+  $userId: [ID]
+  $visibleTagTypeIds: [ID]
+) {
+  node(id: $companyId) {
+    ... on Company {
+      id
+      ...CompanyTransactionsTotalCount
+      transactions(
+        after: $after
+        amountMin: $amountMin
+        amountMax: $amountMax
+        budgetId: $budgetId
+        cardId: $cardId
+        dateEnd: $dateEnd
+        dateStart: $dateStart
+        filterTagValues: $filterTagValues
+        first: $first
+        hasAllRequiredFieldsCompleted: $hasAllRequiredFieldsCompleted
+        isLocked: $isLocked
+        isReviewed: $isReviewed
+        search: $search
+        sortColumn: $sortColumn
+        sortDirection: $sortDirection
+        sortTagType: $sortTagType
+        syncStatus: $syncStatus
+        types: $types
+        userId: $userId
+        visibleTagTypeIds: $visibleTagTypeIds
+      ) {
+        edges {
+          node {
+            id
+            amount
+            authorizedAt
+            budget {
+              id
+              name
+              __typename
+            }
+            card {
+              id
+              cardType
+              lastFour
+              name
+              __typename
+            }
+            cleanedMerchantName
+            clearedAt
+            fees
+            hasAllRequiredFieldsCompleted
+            isLocked
+            isParent
+            merchantCategoryCode
+            merchantLogoUrl
+            merchantName
+            note
+            occurredAt
+            type
+            user {
+              id
+              firstName
+              lastName
+              displayName
+              avatarUrl
+              __typename
+            }
+            ...ChildTransactions
+            ...ReceiptFields
+            ...TransactionIntegrations
+            ...TransactionsTableReviews
+            ...TransactionsTableTags
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+fragment ChildTransactions on Transaction {
+  childTransactions(first: $first) {
+    edges {
+      node {
+        id
+        amount
+        hasAllRequiredFieldsCompleted
+        status
+        accountingIntegrationTransactions {
+          id
+          syncMessage
+          syncStatus
+          integrationType
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+fragment CompanyTransactionsTotalCount on Company {
+  id
+  transactionsTotalCount(
+    amountMin: $amountMin
+    amountMax: $amountMax
+    budgetId: $budgetId
+    cardId: $cardId
+    dateEnd: $dateEnd
+    dateStart: $dateStart
+    filterTagValues: $filterTagValues
+    hasAllRequiredFieldsCompleted: $hasAllRequiredFieldsCompleted
+    isLocked: $isLocked
+    isReviewed: $isReviewed
+    search: $search
+    sortColumn: $sortColumn
+    sortDirection: $sortDirection
+    sortTagType: $sortTagType
+    syncStatus: $syncStatus
+    types: $types
+    userId: $userId
+    visibleTagTypeIds: $visibleTagTypeIds
+  )
+  __typename
+}
+fragment ReceiptFields on Transaction {
+  receiptRequired
+  receipts {
+    id
+    filename
+    url
+    __typename
+  }
+  __typename
+}
+fragment TransactionIntegrations on Transaction {
+  accountingIntegrationTransactions {
+    id
+    syncStatus
+    syncMessage
+    __typename
+  }
+  __typename
+}
+fragment TransactionsTableReviews on Transaction {
+  reviews(includeDeleted: true) {
+    id
+    insertedAt
+    deletedAt
+    reviewer {
+      id
+      displayName
+      firstName
+      lastName
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+fragment TransactionsTableTags on Transaction {
+  tags {
+    id
+    note
+    isRequired
+    selectedTagValues(first: $tagValueCount) {
+      edges {
+        node {
+          id
+          value
+          deleted
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    tagType {
+      id
+      description
+      name
+      deleted
+      multiSelect
+      kind
+      allowCustomValues
+      __typename
+    }
+    __typename
+  }
+  __typename
+}

@@ -1,0 +1,40 @@
+query GetCompanyPayments($companyId: ID!, $first: Int, $after: String) {
+  node(id: $companyId) {
+    ... on Company {
+      id
+      ...CompanyPayments
+      __typename
+    }
+    __typename
+  }
+}
+fragment CompanyPayments on Company {
+  payments(first: $first, after: $after) {
+    pageInfo {
+      endCursor
+      hasNextPage
+      __typename
+    }
+    edges {
+      node {
+        id
+        accountNumber
+        amount
+        initiatedAt
+        postedAt
+        returnedAt
+        type
+        status
+        companyProgram {
+          uuid
+          networkName
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
